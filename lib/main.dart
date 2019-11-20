@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import "Calendar/Calendar.dart";
 import 'package:intl/intl.dart' show DateFormat;
+import 'Dialog/dialog.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
@@ -33,15 +35,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   AnimationController _animationController;
   CalendarController _calendarController;
   DateTime _selectedDay;
-  DateTime _selectedMonth;
-  String _monthName;
 
   @override
   void initState() {
     super.initState();
     _selectedDay = DateTime.now();
-    _selectedMonth = DateTime.now();
-    _monthName = '';
     _calendarController = CalendarController();
     _animationController = AnimationController(
       vsync: this,
@@ -60,11 +58,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     setState(() {
       _selectedDay = day;
     });
+    showModalDialog(
+        context,
+        "Reinicie o app",
+        "A página que você tentou acessar não\nestá respondendo.",
+        Icon(Icons.close));
     print(_selectedDay);
   }
-
-  void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {}
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   Widget _buildCalendar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(10, 50, 10, 0),
+      padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
       child: TableCalendar(
         formatAnimation: FormatAnimation.slide,
         startDay: DateTime.now(),
@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         initialCalendarFormat: CalendarFormat.month,
         startingDayOfWeek: StartingDayOfWeek.monday,
         availableGestures: AvailableGestures.all,
+        rowHeight: 65,
         calendarStyle: CalendarStyle(
           outsideDaysVisible: true,
           weekendStyle: TextStyle().copyWith(color: Colors.black),
@@ -100,59 +101,58 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           weekendStyle: TextStyle().copyWith(color: Colors.black),
         ),
         headerStyle: HeaderStyle(
-            //headerMargin: EdgeInsets.fromLTRB(20, 30, 20, 0),
             centerHeaderTitle: true,
-            formatButtonVisible: false,
-            headerMargin: EdgeInsets.fromLTRB(20, 0, 20, 0),
             titleTextStyle: TextStyle(
                 color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
             titleTextBuilder: (date, context) {
               String monthName = DateFormat.LLLL("pt_BR").format(date);
               return "${monthName[0].toUpperCase()}${monthName.substring(1)}";
-              // _onTitleChange(date);
-              //return "";
             }),
         builders: CalendarBuilders(
           dowWeekdayBuilder: (context, date) {
             return Container(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                child: Text(
-                  '${date[0].toUpperCase()}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black),
-                ),
+              margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+              child: Text(
+                '${date[0].toUpperCase()}',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black),
               ),
             );
           },
           todayDayBuilder: (context, date, _) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              margin: const EdgeInsets.all(8),
-              child: Center(
-                child: Text(
-                  '${date.day}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white),
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                margin: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                child: Center(
+                  child: Text(
+                    '${date.day}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.blue),
+                  ),
                 ),
               ),
             );
           },
           selectedDayBuilder: (context, date, _) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                borderRadius: BorderRadius.circular(50),
-              ),
-              margin: const EdgeInsets.all(8),
-              child: Center(
-                child: Text(
-                  '${date.day}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white),
+            return Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                margin: const EdgeInsets.fromLTRB(0, 3, 0, 3),
+                child: Center(
+                  child: Text(
+                    '${date.day}',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             );
@@ -162,7 +162,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           _onDaySelected(date);
           //_animationController.forward(from: 0.0);
         },
-        onVisibleDaysChanged: _onVisibleDaysChanged,
       ),
     );
   }

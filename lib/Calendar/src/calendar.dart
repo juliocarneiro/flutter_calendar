@@ -282,12 +282,6 @@ class _TableCalendarState extends State<TableCalendar>
     }
   }
 
-  void _toggleCalendarFormat() {
-    setState(() {
-      widget.calendarController.toggleCalendarFormat();
-    });
-  }
-
   void _onHorizontalSwipe(DismissDirection direction) {
     if (direction == DismissDirection.startToEnd) {
       // Swipe right
@@ -368,17 +362,11 @@ class _TableCalendarState extends State<TableCalendar>
     DateTime dayNext =
         widget.calendarController.focusedDay.add(Duration(days: 35));
     final children = [
-      // _CustomIconButton(
-      //   icon: widget.headerStyle.leftChevronIcon,
-      //   onTap: _selectPrevious,
-      //   margin: widget.headerStyle.leftChevronMargin,
-      //   padding: widget.headerStyle.leftChevronPadding,
-      // ),
       GestureDetector(
         onTap: _selectPrevious,
         child: Container(
-          width: 90,
-          height: 25,
+          width: 110,
+          height: 27,
           decoration: BoxDecoration(
               color: Colors.grey[200], borderRadius: BorderRadius.circular(50)),
           child: Center(
@@ -392,30 +380,26 @@ class _TableCalendarState extends State<TableCalendar>
           ),
         ),
       ),
-
-      Expanded(
-        child: GestureDetector(
-          onTap: _onHeaderTapped,
-          onLongPress: _onHeaderLongPressed,
+      GestureDetector(
+        onTap: _onHeaderTapped,
+        onLongPress: _onHeaderLongPressed,
+        child: Container(
+          margin: const EdgeInsets.only(left: 30.0, right: 30.0),
+          width: 110,
+          decoration: BoxDecoration(
+              color: Colors.blue, borderRadius: BorderRadius.circular(50)),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(50)),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-                child: Text(
-                  widget.headerStyle.titleTextBuilder != null
-                      ? widget.headerStyle.titleTextBuilder(
-                          widget.calendarController.focusedDay, widget.locale)
-                      : DateFormat.yMMMM(widget.locale)
-                          .format(widget.calendarController.focusedDay),
-                  style: widget.headerStyle.titleTextStyle,
-                  textAlign: widget.headerStyle.centerHeaderTitle
-                      ? TextAlign.center
-                      : TextAlign.start,
-                ),
-              ),
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+            child: Text(
+              widget.headerStyle.titleTextBuilder != null
+                  ? widget.headerStyle.titleTextBuilder(
+                      widget.calendarController.focusedDay, widget.locale)
+                  : DateFormat.yMMMM(widget.locale)
+                      .format(widget.calendarController.focusedDay),
+              style: widget.headerStyle.titleTextStyle,
+              textAlign: widget.headerStyle.centerHeaderTitle
+                  ? TextAlign.center
+                  : TextAlign.start,
             ),
           ),
         ),
@@ -423,8 +407,8 @@ class _TableCalendarState extends State<TableCalendar>
       GestureDetector(
         onTap: _selectNext,
         child: Container(
-          width: 90,
-          height: 25,
+          width: 110,
+          height: 27,
           decoration: BoxDecoration(
               color: Colors.grey[200], borderRadius: BorderRadius.circular(40)),
           child: Center(
@@ -438,41 +422,15 @@ class _TableCalendarState extends State<TableCalendar>
           ),
         ),
       ),
-      // _CustomIconButton(
-      //   icon: widget.headerStyle.rightChevronIcon,
-      //   onTap: _selectNext,
-      //   margin: widget.headerStyle.rightChevronMargin,
-      //   padding: widget.headerStyle.rightChevronPadding,
-      // ),
     ];
 
-    if (widget.headerStyle.formatButtonVisible &&
-        widget.availableCalendarFormats.length > 1) {
-      children.insert(2, const SizedBox(width: 8.0));
-      children.insert(3, _buildFormatButton());
-    }
-
-    return Container(
-      decoration: widget.headerStyle.decoration,
-      margin: widget.headerStyle.headerMargin,
-      padding: widget.headerStyle.headerPadding,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: Wrap(
+        spacing: 0, // gap between adjacent chips
+        runSpacing: 10.0, // gap between lines
+        direction: Axis.horizontal,
         children: children,
-      ),
-    );
-  }
-
-  Widget _buildFormatButton() {
-    return GestureDetector(
-      onTap: _toggleCalendarFormat,
-      child: Container(
-        decoration: widget.headerStyle.formatButtonDecoration,
-        padding: widget.headerStyle.formatButtonPadding,
-        child: Text(
-          widget.calendarController._getFormatButtonText(),
-          style: widget.headerStyle.formatButtonTextStyle,
-        ),
       ),
     );
   }
